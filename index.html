@@ -2,92 +2,387 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Quick Lead Capture</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plinqx | Win a $150 Woolworths gift card</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Fill in the form to enter the Plinqx DemoJam draw for a $150 Woolworths gift card.">
+  <meta name="theme-color" content="#0a0b0d">
+  <link rel="icon" type="image/png" href="assets/plinqx-mark-512.png">
+  <link rel="apple-touch-icon" href="assets/plinqx-mark-512.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
+    /* ================================================================
+       Plinqx design system tokens (subset)
+       Source: Design/design system/tokens/*.css
+       ================================================================ */
+    :root{
+      /* Brand — lime is the single accent */
+      --lime-200:#d4e999;--lime-300:#bde066;--lime-500:#96d200;--lime-600:#7fb200;--lime-700:#679000;
+      /* Ink */
+      --ink-000:#000000;--ink-900:#111214;--ink-800:#232529;--ink-700:#45474b;
+      --ink-500:#707174;--ink-400:#9a9b9f;--ink-300:#c4c5c8;--ink-200:#e2e2e4;--ink-100:#f0eded;
+      /* Paper */
+      --paper:#fcf8f9;--paper-raised:#ffffff;
+      /* Atmosphere */
+      --wash-lime:#d4e999;--wash-periwinkle:#e4eafa;--grid-line:#e5eed4;
+      --danger:#c02b2b;
+      /* Aliases */
+      --text-heading:var(--ink-000);--text-body:var(--ink-700);--text-muted:var(--ink-500);
+      --border-subtle:var(--ink-200);--border-strong:var(--ink-300);
+      --accent:var(--lime-500);--accent-hover:var(--lime-600);--accent-press:var(--lime-700);
+      --on-accent:var(--ink-000);
+      /* Type */
+      --font-sans:"Archivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+      --fs-body:17px;--fs-body-sm:15px;--fs-caption:13px;
+      --lh-heading:1.15;--lh-body:1.6;--ls-heading:-0.02em;--ls-display:-0.035em;--ls-eyebrow:0.12em;
+      --fw-regular:400;--fw-medium:500;--fw-semibold:600;--fw-bold:700;--fw-black:800;
+      /* Space */
+      --space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;
+      --space-8:32px;--space-10:40px;--space-12:48px;
+      --control-h-md:44px;--control-h-lg:54px;
+      /* Radius */
+      --radius-control:8px;--radius-card:12px;--radius-pill:999px;
+      /* Elevation */
+      --shadow-xs:0 1px 2px rgba(17,18,20,.05);
+      --shadow-sm:0 1px 2px rgba(17,18,20,.05),0 2px 8px rgba(17,18,20,.04);
+      --shadow-md:0 2px 4px rgba(17,18,20,.04),0 8px 24px rgba(17,18,20,.06);
+      --shadow-lg:0 4px 8px rgba(17,18,20,.04),0 20px 48px rgba(17,18,20,.08);
+      --ring-accent:0 0 0 3px rgba(150,210,0,.35);
+      --ring-focus:0 0 0 3px rgba(150,210,0,.45);
+      /* Motion */
+      --ease-out:cubic-bezier(.16,1,.3,1);--dur-fast:140ms;--dur-base:220ms;
+      --transition-control:background-color var(--dur-fast) var(--ease-out),color var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out),box-shadow var(--dur-fast) var(--ease-out),transform var(--dur-fast) var(--ease-out);
+      /* Gradients */
+      --gradient-hero:linear-gradient(160deg,var(--wash-lime) 0%,#eaf1e0 26%,#f4f2f6 52%,var(--paper) 78%),linear-gradient(255deg,var(--wash-periwinkle) 0%,rgba(228,234,250,0) 46%);
+      --gradient-ink:linear-gradient(150deg,#15161a 0%,#0a0b0d 100%);
+      --pattern-grid:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+      /* Fluid prize headline — 30px phone, 44px desktop */
+      --fs-prize:clamp(30px,8.2vw,44px);
     }
-    .container {
-      max-width: 520px;
-      margin: 0 auto;
-      padding: 20px;
+
+    *,*::before,*::after{box-sizing:border-box}
+
+    html{-webkit-text-size-adjust:100%}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      min-height:100dvh;
+      background:var(--paper);
+      color:var(--text-body);
+      font-family:var(--font-sans);
+      font-size:var(--fs-body);
+      line-height:var(--lh-body);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      overflow-x:hidden;
     }
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,.08);
+
+    h1,h2{color:var(--text-heading);font-weight:var(--fw-bold);letter-spacing:var(--ls-heading);line-height:var(--lh-heading);margin:0;text-wrap:balance}
+    p{margin:0;text-wrap:pretty}
+    ::selection{background:#eaf7cc;color:var(--ink-000)}
+
+    /* ---- Hero wash: lime top-left, periwinkle top-right, 64px grid ----
+       Absolute, not fixed — fixed backgrounds repaint badly on iOS scroll. */
+    .wash{
+      position:absolute;top:0;left:0;right:0;height:min(58vh,520px);
+      background:var(--gradient-hero);
+      pointer-events:none;z-index:0;
     }
-    h1 {
-      font-size: 18px;
-      margin-bottom: 14px;
+    .wash::after{
+      content:"";position:absolute;inset:0;
+      background-image:var(--pattern-grid);
+      background-size:64px 64px;
+      opacity:.6;
+      -webkit-mask-image:linear-gradient(180deg,#000 0%,#000 50%,transparent 100%);
+              mask-image:linear-gradient(180deg,#000 0%,#000 50%,transparent 100%);
     }
-    label {
-      font-size: 13px;
-      margin-top: 12px;
-      display: block;
+
+    .page{
+      position:relative;z-index:1;
+      min-height:100vh;
+      min-height:100dvh;
+      display:flex;align-items:center;justify-content:center;
+      padding:
+        calc(var(--space-10) + env(safe-area-inset-top))
+        calc(var(--space-5) + env(safe-area-inset-right))
+        calc(var(--space-10) + env(safe-area-inset-bottom))
+        calc(var(--space-5) + env(safe-area-inset-left));
     }
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #d0d5dd;
-      margin-top: 4px;
+
+    .container{width:100%;max-width:520px}
+
+    /* ---- Masthead ---- */
+    /* Wordmark is 615x225 (2.73:1), so 48px tall is still well under 1:1
+       at 2x — no softening. Minimum in the system is 20px. */
+    .masthead{display:flex;justify-content:center;margin-bottom:var(--space-8)}
+    .masthead img{height:48px;width:auto;display:block}
+
+    /* ---- Card ---- */
+    .card{
+      background:var(--paper-raised);
+      border:1px solid var(--border-subtle);
+      border-radius:var(--radius-card);
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
     }
-    button {
-      margin-top: 18px;
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: none;
-      background: #0176d3;
-      color: white;
-      cursor: pointer;
+
+    /* ================================================================
+       Prize panel — ink band with the brand wave artwork bleeding right,
+       and the lime edge rule carried over from the event banners.
+       ================================================================ */
+    .prize{
+      position:relative;
+      background:var(--gradient-ink);
+      padding:var(--space-8) var(--space-6) var(--space-8) calc(var(--space-6) + 6px);
+      overflow:hidden;
+      isolation:isolate;
+    }
+
+    /* 6px lime edge rule — the event-collateral signature */
+    .prize::before{
+      content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+      background:var(--accent);z-index:2;
+    }
+
+    /* Wave artwork, right-bleeding, held off the copy column */
+    .prize-art{
+      position:absolute;inset:0;z-index:0;pointer-events:none;
+      background-image:url("assets/bg-wave-dark.png");
+      background-size:cover;
+      background-position:right center;
+      opacity:.85;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
+              mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
+    }
+
+    .prize > *:not(.prize-art){position:relative;z-index:1}
+
+    .prize .eyebrow{
+      display:inline-flex;align-items:center;gap:10px;
+      font-size:var(--fs-caption);font-weight:var(--fw-semibold);
+      letter-spacing:var(--ls-eyebrow);text-transform:uppercase;
+      color:rgba(255,255,255,.72);
+      margin-bottom:var(--space-4);
+    }
+    .prize .eyebrow::before{content:"";width:18px;height:2px;background:var(--accent);flex:none}
+
+    .prize h1{
+      color:#ffffff;
+      font-size:var(--fs-prize);
+      font-weight:var(--fw-black);
+      letter-spacing:var(--ls-display);
+      line-height:1.02;
+      max-width:12ch;
+    }
+
+    .prize .sub{
+      color:rgba(255,255,255,.72);
+      font-size:var(--fs-body-sm);
+      line-height:1.5;
+      margin-top:var(--space-4);
+      max-width:34ch;
+    }
+
+    /* ---- Form body ---- */
+    .card-body{padding:var(--space-8) var(--space-6) var(--space-6)}
+
+    .form-intro{
+      font-size:var(--fs-body-sm);
+      color:var(--text-muted);
+      margin-bottom:var(--space-6);
+    }
+    .form-intro strong{color:var(--ink-900);font-weight:var(--fw-semibold)}
+
+    form{display:flex;flex-direction:column;gap:var(--space-5)}
+
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+
+    .field{display:flex;flex-direction:column;gap:7px;min-width:0}
+
+    .field label{
+      font-size:var(--fs-body-sm);
+      font-weight:var(--fw-medium);
+      color:var(--ink-800);
+      line-height:1.3;
+    }
+    .field label .req{color:var(--lime-700);margin-left:3px}
+
+    /* 16px is the floor on inputs — anything smaller makes iOS Safari
+       zoom the viewport on focus, which wrecks a phone-first form. */
+    input[type="text"],input[type="email"],input[type="tel"]{
+      width:100%;
+      height:50px;
+      padding:0 14px;
+      font-family:var(--font-sans);
+      font-size:16px;
+      color:var(--ink-900);
+      background:var(--paper-raised);
+      border:1px solid var(--border-subtle);
+      border-radius:var(--radius-control);
+      outline:none;
+      box-shadow:var(--shadow-xs);
+      transition:var(--transition-control);
+      -webkit-appearance:none;
+      appearance:none;
+    }
+
+    input::placeholder{color:var(--ink-400)}
+    input:hover{border-color:var(--border-strong)}
+    input:focus{border-color:var(--accent);box-shadow:var(--ring-accent)}
+    input:user-invalid{border-color:var(--danger)}
+
+    /* ---- Submit — the single accent moment on the page ---- */
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      width:100%;
+      min-height:56px;
+      padding:0 28px;
+      margin-top:var(--space-2);
+      font-family:var(--font-sans);
+      font-size:var(--fs-body);
+      font-weight:var(--fw-semibold);
+      letter-spacing:-0.01em;
+      border:1px solid transparent;
+      border-radius:var(--radius-control);
+      cursor:pointer;
+      transition:var(--transition-control);
+      -webkit-appearance:none;
+      appearance:none;
+      touch-action:manipulation;
+    }
+
+    .btn-accent{background:var(--accent);color:var(--on-accent)}
+    .btn-accent:hover{background:var(--accent-hover)}
+    .btn-accent:active{background:var(--accent-press)}
+
+    :focus-visible{outline:none;box-shadow:var(--ring-focus)}
+
+    .terms{
+      font-size:var(--fs-caption);
+      line-height:1.5;
+      color:var(--text-muted);
+      text-align:center;
+      margin-top:var(--space-4);
+    }
+
+    /* ---- Footnote ---- */
+    .footnote{
+      text-align:center;
+      color:var(--text-muted);
+      font-size:var(--fs-caption);
+      line-height:1.5;
+      margin-top:var(--space-5);
+    }
+
+    /* ---- Phone ---- */
+    @media (max-width:560px){
+      .page{
+        align-items:flex-start;
+        padding-top:calc(var(--space-6) + env(safe-area-inset-top));
+        padding-left:calc(var(--space-4) + env(safe-area-inset-left));
+        padding-right:calc(var(--space-4) + env(safe-area-inset-right));
+        padding-bottom:calc(var(--space-6) + env(safe-area-inset-bottom));
+      }
+      .masthead{margin-bottom:var(--space-6)}
+      .masthead img{height:42px}
+      .prize{padding:var(--space-6) var(--space-5) var(--space-6) calc(var(--space-5) + 6px)}
+      .prize h1{max-width:14ch}
+      .card-body{padding:var(--space-6) var(--space-5) var(--space-5)}
+      .row{grid-template-columns:1fr;gap:var(--space-5)}
+    }
+
+    /* Short landscape phones — don't let the prize panel eat the fold */
+    @media (max-height:520px) and (orientation:landscape){
+      .prize{padding-top:var(--space-5);padding-bottom:var(--space-5)}
+      .prize .sub{display:none}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>Let’s stay in touch</h1>
+  <div class="wash" aria-hidden="true"></div>
 
-      <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00D2t000000pkXl" method="POST">
+  <div class="page">
+    <div class="container">
 
-<input type=hidden name="oid" value="00D2t000000pkXl">
-<input type=hidden name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/">
+      <div class="masthead">
+        <img src="assets/plinqx-logo.png" alt="Plinqx" width="131" height="48">
+      </div>
 
-<!--  ----------------------------------------------------------------------  -->
-<!--  NOTE: These fields are optional debugging elements. Please uncomment    -->
-<!--  these lines if you wish to test in debug mode.                          -->
-<!--  <input type="hidden" name="debug" value=1>                              -->
-<!--  <input type="hidden" name="debugEmail"                                  -->
-<!--  value="graham.winder@plinqx.com">                                       -->
-<!--  ----------------------------------------------------------------------  -->
+      <div class="card">
 
-<label for="first_name">First Name</label><input  id="first_name" maxlength="40" name="first_name" size="20" type="text" /><br>
+        <div class="prize">
+          <div class="prize-art" aria-hidden="true"></div>
+          <span class="eyebrow">DemoJam prize draw</span>
+          <h1>Win a $150 Woolworths gift card.</h1>
+          <p class="sub">Fill in the form below and you&rsquo;re entered. We draw the winner at the end of DemoJam and email them straight away.</p>
+        </div>
 
-<label for="last_name">Last Name</label><input  id="last_name" maxlength="80" name="last_name" size="20" type="text" /><br>
+        <div class="card-body">
+          <p class="form-intro"><strong>A few quick details.</strong> Submit them and your entry is in.</p>
 
-<label for="email">Email</label><input  id="email" maxlength="80" name="email" size="20" type="text" /><br>
+          <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00D2t000000pkXl" method="POST">
 
-<label for="company">Company</label><input  id="company" maxlength="40" name="company" size="20" type="text" /><br>
+            <input type="hidden" name="oid" value="00D2t000000pkXl">
+            <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/">
+            <input type="hidden" name="description" value="DemoJam event — entered the Plinqx $150 Woolworths gift card draw.">
 
-<label for="city">City</label><input  id="city" maxlength="40" name="city" size="20" type="text" /><br>
+            <!--  ----------------------------------------------------------------------  -->
+            <!--  NOTE: These fields are optional debugging elements. Please uncomment    -->
+            <!--  these lines if you wish to test in debug mode.                          -->
+            <!--  <input type="hidden" name="debug" value=1>                              -->
+            <!--  <input type="hidden" name="debugEmail"                                  -->
+            <!--  value="graham.winder@plinqx.com">                                       -->
+            <!--  ----------------------------------------------------------------------  -->
 
-<label for="state">State/Province</label><input  id="state" maxlength="20" name="state" size="20" type="text" /><br>
+            <div class="row">
+              <div class="field">
+                <label for="first_name">First name</label>
+                <input id="first_name" name="first_name" type="text" maxlength="40"
+                       autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Ada">
+              </div>
 
-<label for="description">Description</label><textarea name="description"></textarea><br>
+              <div class="field">
+                <label for="last_name">Last name<span class="req" aria-hidden="true">*</span></label>
+                <input id="last_name" name="last_name" type="text" maxlength="80"
+                       autocomplete="family-name" autocapitalize="words" enterkeyhint="next" placeholder="Lovelace" required>
+              </div>
+            </div>
 
-<input type="submit" name="submit">
+            <div class="field">
+              <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" maxlength="80"
+                     autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off"
+                     spellcheck="false" enterkeyhint="next" placeholder="you@company.com" required>
+            </div>
 
-</form>
+            <div class="field">
+              <label for="mobile">Mobile</label>
+              <input id="mobile" name="mobile" type="tel" maxlength="40"
+                     autocomplete="tel" inputmode="tel" autocorrect="off"
+                     spellcheck="false" enterkeyhint="next" placeholder="0400 000 000">
+            </div>
 
+            <div class="field">
+              <label for="company">Company<span class="req" aria-hidden="true">*</span></label>
+              <input id="company" name="company" type="text" maxlength="40"
+                     autocomplete="organization" autocapitalize="words" enterkeyhint="go" placeholder="Your company" required>
+            </div>
+
+            <button class="btn btn-accent" type="submit">Enter the draw</button>
+
+            <p class="terms">One entry per person. Winner notified by email after the event.</p>
+          </form>
+        </div>
+      </div>
+
+      <p class="footnote">Your details go securely to Plinqx and we&rsquo;ll follow up after the event.</p>
 
     </div>
   </div>
