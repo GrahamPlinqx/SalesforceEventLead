@@ -11,6 +11,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap">
+
+  <!-- Salesforce returns here with ?entered=1 after a successful post. Flag it
+       on <html> before first paint so the confirmation view renders directly,
+       with no flash of the entry form. -->
+  <script>
+    if (/[?&]entered=1(?:&|$)/.test(window.location.search)) {
+      document.documentElement.className += ' entered';
+      document.title = "Plinqx | You're in the draw";
+    }
+  </script>
+
   <style>
     /* ================================================================
        Plinqx design system tokens (subset)
@@ -113,6 +124,15 @@
 
     .container{width:100%;max-width:520px}
 
+    /* ---- The two views ----
+       Entry is the default. Salesforce returns to ?entered=1, which puts
+       .entered on <html> and swaps to the confirmation. The entry form is
+       removed from the DOM flow entirely, so the return trip cannot produce
+       a second submission. */
+    .confirm-view{display:none}
+    .entered .entry-view{display:none}
+    .entered .confirm-view{display:block}
+
     /* ---- Masthead ---- */
     /* Wordmark is 615x225 (2.73:1), so 48px tall is still well under 1:1
        at 2x — no softening. Minimum in the system is 20px. */
@@ -184,6 +204,57 @@
       margin-top:var(--space-4);
       max-width:34ch;
     }
+
+    /* ================================================================
+       Confirmation panel — same ink band and lime edge rule as the prize
+       panel, so the return trip reads as the same object, resolved.
+       ================================================================ */
+    .confirm{
+      position:relative;
+      background:var(--gradient-ink);
+      padding:var(--space-8) var(--space-6) var(--space-8) calc(var(--space-6) + 6px);
+      overflow:hidden;
+    }
+    .confirm::before{
+      content:"";position:absolute;left:0;top:0;bottom:0;width:6px;
+      background:var(--accent);z-index:2;
+    }
+
+    /* IconTile, accent tone — the single lime moment on the confirmation */
+    .tile{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:48px;height:48px;border-radius:var(--radius-tile);
+      background:var(--accent);color:var(--ink-000);
+      margin-bottom:var(--space-5);
+    }
+    .tile svg{width:24px;height:24px;display:block}
+
+    .confirm h1{
+      color:#ffffff;
+      font-size:clamp(28px,7.6vw,40px);
+      font-weight:var(--fw-black);
+      letter-spacing:var(--ls-display);
+      line-height:1.02;
+      max-width:14ch;
+    }
+    .confirm .sub{
+      color:rgba(255,255,255,.72);font-size:var(--fs-body-sm);line-height:1.5;
+      margin-top:var(--space-4);max-width:36ch;
+    }
+
+    .next{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-5)}
+    .next li{display:flex;gap:var(--space-4);align-items:flex-start}
+    .next .n{
+      flex:none;width:26px;height:26px;border-radius:var(--radius-tile);
+      background:var(--ink-100);color:var(--ink-800);
+      font-size:var(--fs-caption);font-weight:var(--fw-semibold);
+      display:inline-flex;align-items:center;justify-content:center;margin-top:2px;
+    }
+    .next .t{font-size:var(--fs-body-sm);line-height:1.5;color:var(--text-body)}
+    .next .t strong{color:var(--ink-900);font-weight:var(--fw-semibold)}
+
+    .footnote a{color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}
+    .footnote a:hover{color:var(--lime-700)}
 
     /* ---- Form body ---- */
     .card-body{padding:var(--space-8) var(--space-6) var(--space-6)}
@@ -348,20 +419,47 @@
 
       <div class="card">
 
-        <div class="prize">
+        <div class="prize entry-view">
           <div class="prize-art" aria-hidden="true"></div>
           <span class="eyebrow">DemoJam prize draw</span>
           <h1>Win a $150 Woolworths gift card.</h1>
           <p class="sub">Fill in the form below and you&rsquo;re entered. We draw the winner at the end of DemoJam and email them straight away.</p>
         </div>
 
-        <div class="card-body">
+        <div class="confirm confirm-view">
+          <span class="tile" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <h1>You&rsquo;re in the draw.</h1>
+          <p class="sub">Your entry is recorded. There&rsquo;s nothing else you need to do.</p>
+        </div>
+
+        <div class="card-body confirm-view">
+          <ul class="next">
+            <li>
+              <span class="n" aria-hidden="true">1</span>
+              <span class="t"><strong>We draw the winner at the end of DemoJam.</strong> One entry per person.</span>
+            </li>
+            <li>
+              <span class="n" aria-hidden="true">2</span>
+              <span class="t"><strong>The winner gets an email.</strong> Sent to the address you just gave us, so keep an eye on it.</span>
+            </li>
+            <li>
+              <span class="n" aria-hidden="true">3</span>
+              <span class="t"><strong>We&rsquo;ll follow up after the event.</strong> Plinqx connects the systems that run your business to Salesforce, and to AI.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card-body entry-view">
           <p class="form-intro"><strong>A few quick details.</strong> Submit them and your entry is in.</p>
 
-          <form id="entry-form" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00D2t000000pkXl" method="POST">
+          <form id="entry-form" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00DgK00000cHQwI" method="POST">
 
-            <input type="hidden" name="oid" value="00D2t000000pkXl">
-            <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/thanks.html">
+            <input type="hidden" name="oid" value="00DgK00000cHQwI">
+            <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/?entered=1">
+            <input type="hidden" name="lead_source" value="Web">
             <input type="hidden" name="description" value="DemoJam event — entered the Plinqx $150 Woolworths gift card draw.">
 
             <!--  ----------------------------------------------------------------------  -->
@@ -369,7 +467,7 @@
             <!--  these lines if you wish to test in debug mode.                          -->
             <!--  <input type="hidden" name="debug" value=1>                              -->
             <!--  <input type="hidden" name="debugEmail"                                  -->
-            <!--  value="graham.winder@plinqx.com">                                       -->
+            <!--  value="chintanplinqx@gmail.com">                                        -->
             <!--  ----------------------------------------------------------------------  -->
 
             <div class="row">
@@ -433,7 +531,8 @@
         </div>
       </div>
 
-      <p class="footnote">Your details go securely to Plinqx and we&rsquo;ll follow up after the event.</p>
+      <p class="footnote entry-view">Your details go securely to Plinqx and we&rsquo;ll follow up after the event.</p>
+      <p class="footnote confirm-view">Good luck &middot; <a href="https://www.plinqx.com">plinqx.com</a></p>
 
     </div>
   </div>
