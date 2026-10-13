@@ -233,6 +233,37 @@
     input:focus{border-color:var(--accent);box-shadow:var(--ring-accent)}
     input:user-invalid{border-color:var(--danger)}
 
+    /* ---- Validation errors ---- */
+    .field .error{
+      display:none;
+      font-size:var(--fs-caption);
+      line-height:1.45;
+      color:var(--danger);
+    }
+    .field.is-invalid .error{display:block}
+
+    .form-error{
+      font-size:var(--fs-body-sm);
+      line-height:1.5;
+      color:var(--danger);
+      background:#fdecec;
+      border:1px solid rgba(192,43,43,.22);
+      border-radius:var(--radius-control);
+      padding:var(--space-3) var(--space-4);
+    }
+    .field.is-invalid input{border-color:var(--danger)}
+    .field.is-invalid input:focus{box-shadow:0 0 0 3px rgba(192,43,43,.22)}
+
+    /* ---- Honeypot ----
+       Held off-screen rather than display:none — plenty of bots skip
+       hidden inputs but will happily fill one that is merely positioned away.
+       aria-hidden and tabindex=-1 keep it away from people and screen readers. */
+    .hp{
+      position:absolute;left:-9999px;top:0;
+      width:1px;height:1px;overflow:hidden;
+      opacity:0;pointer-events:none;
+    }
+
     /* ---- Submit — the single accent moment on the page ---- */
     .btn{
       display:inline-flex;align-items:center;justify-content:center;gap:10px;
@@ -327,10 +358,10 @@
         <div class="card-body">
           <p class="form-intro"><strong>A few quick details.</strong> Submit them and your entry is in.</p>
 
-          <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00D2t000000pkXl" method="POST">
+          <form id="entry-form" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&amp;orgId=00D2t000000pkXl" method="POST">
 
             <input type="hidden" name="oid" value="00D2t000000pkXl">
-            <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/">
+            <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/thanks.html">
             <input type="hidden" name="description" value="DemoJam event — entered the Plinqx $150 Woolworths gift card draw.">
 
             <!--  ----------------------------------------------------------------------  -->
@@ -342,40 +373,60 @@
             <!--  ----------------------------------------------------------------------  -->
 
             <div class="row">
-              <div class="field">
+              <div class="field" data-field="first_name">
                 <label for="first_name">First name</label>
                 <input id="first_name" name="first_name" type="text" maxlength="40"
-                       autocomplete="given-name" autocapitalize="words" enterkeyhint="next" placeholder="Ada">
+                       autocomplete="given-name" autocapitalize="words" enterkeyhint="next"
+                       aria-describedby="first_name-error" placeholder="Ada">
+                <span class="error" id="first_name-error"></span>
               </div>
 
-              <div class="field">
+              <div class="field" data-field="last_name">
                 <label for="last_name">Last name<span class="req" aria-hidden="true">*</span></label>
                 <input id="last_name" name="last_name" type="text" maxlength="80"
-                       autocomplete="family-name" autocapitalize="words" enterkeyhint="next" placeholder="Lovelace" required>
+                       autocomplete="family-name" autocapitalize="words" enterkeyhint="next"
+                       aria-describedby="last_name-error" placeholder="Lovelace" required>
+                <span class="error" id="last_name-error"></span>
               </div>
             </div>
 
-            <div class="field">
+            <div class="field" data-field="email">
               <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
               <input id="email" name="email" type="email" maxlength="80"
                      autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off"
-                     spellcheck="false" enterkeyhint="next" placeholder="you@company.com" required>
+                     spellcheck="false" enterkeyhint="next"
+                     aria-describedby="email-error" placeholder="you@company.com" required>
+              <span class="error" id="email-error"></span>
             </div>
 
-            <div class="field">
+            <div class="field" data-field="mobile">
               <label for="mobile">Mobile</label>
               <input id="mobile" name="mobile" type="tel" maxlength="40"
                      autocomplete="tel" inputmode="tel" autocorrect="off"
-                     spellcheck="false" enterkeyhint="next" placeholder="0400 000 000">
+                     spellcheck="false" enterkeyhint="next"
+                     aria-describedby="mobile-error" placeholder="0400 000 000">
+              <span class="error" id="mobile-error"></span>
             </div>
 
-            <div class="field">
+            <div class="field" data-field="company">
               <label for="company">Company<span class="req" aria-hidden="true">*</span></label>
               <input id="company" name="company" type="text" maxlength="40"
-                     autocomplete="organization" autocapitalize="words" enterkeyhint="go" placeholder="Your company" required>
+                     autocomplete="organization" autocapitalize="words" enterkeyhint="go"
+                     aria-describedby="company-error" placeholder="Your company" required>
+              <span class="error" id="company-error"></span>
             </div>
 
-            <button class="btn btn-accent" type="submit">Enter the draw</button>
+            <!-- Honeypot. Not a Web-to-Lead field name; disabled before submit
+                 so it never reaches Salesforce. -->
+            <div class="hp" aria-hidden="true">
+              <label for="nickname_confirm">Leave this field empty</label>
+              <input id="nickname_confirm" name="nickname_confirm" type="text"
+                     tabindex="-1" autocomplete="off">
+            </div>
+
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+
+            <button id="entry-submit" class="btn btn-accent" type="submit">Enter the draw</button>
 
             <p class="terms">One entry per person. Winner notified by email after the event.</p>
           </form>
@@ -386,5 +437,200 @@
 
     </div>
   </div>
+
+  <script>
+  /* ------------------------------------------------------------------
+     Entry form guards.
+
+     IMPORTANT: all of this is client-side and therefore advisory only.
+     The form posts straight to a public Web-to-Lead endpoint, so anyone
+     can bypass this page entirely with a direct POST. This layer exists
+     to keep honest entries clean and to cost casual bots something — it
+     is NOT a security boundary. The durable controls are Salesforce-side:
+     reCAPTCHA on Web-to-Lead, validation rules, and duplicate rules.
+     ------------------------------------------------------------------ */
+  (function () {
+    'use strict';
+
+    var form = document.getElementById('entry-form');
+    if (!form) return;
+
+    var submitBtn = document.getElementById('entry-submit');
+    var honeypot  = document.getElementById('nickname_confirm');
+    var loadedAt  = Date.now();
+
+    /* A human cannot fill five fields this fast. */
+    var MIN_FILL_MS = 2500;
+
+    /* Leading characters that make Excel and Sheets evaluate a cell as a
+       formula. Stripped from the front of every free-text value so an
+       exported lead list cannot execute anything. */
+    var FORMULA_PREFIX = /^[=+\-@\t\r\u0000-\u001f]+/;
+
+    /* Characters that have no business in a name, company or email and
+       that cause trouble in CSV, HTML and quoted contexts downstream. */
+    var UNSAFE = /["<>\\`\u0000-\u001f\u007f]/;
+
+    var RULES = {
+      first_name: {
+        test: function (v) { return v === '' || /^[\p{L}\p{M}][\p{L}\p{M}'’ .-]{0,39}$/u.test(v); },
+        msg: 'Letters, spaces, hyphens and apostrophes only.'
+      },
+      last_name: {
+        required: true,
+        emptyMsg: 'Enter your last name.',
+        test: function (v) { return /^[\p{L}\p{M}][\p{L}\p{M}'’ .-]{0,79}$/u.test(v); },
+        msg: 'Letters, spaces, hyphens and apostrophes only.'
+      },
+      email: {
+        required: true,
+        emptyMsg: 'Enter your email address.',
+        test: function (v) { return /^[^\s@"'<>;,\\]{1,64}@[\p{L}\p{N}-]{1,63}(?:\.[\p{L}\p{N}-]{1,63})+$/u.test(v); },
+        msg: 'Enter a valid email address, like you@company.com.'
+      },
+      mobile: {
+        /* Whitelist. Nothing that is not a phone character can get through,
+           which closes CSV injection on this field without special-casing
+           the leading + that real numbers need. */
+        test: function (v) { return v === '' || (/^[0-9+()\s-]{8,20}$/.test(v) && (v.replace(/\D/g, '').length >= 8)); },
+        msg: 'Use digits, spaces and + ( ) - only, at least 8 digits.'
+      },
+      company: {
+        required: true,
+        emptyMsg: 'Enter your company.',
+        test: function (v) { return /^[\p{L}\p{N}][\p{L}\p{N}\p{M}'’ .,&()\/-]{0,39}$/u.test(v); },
+        msg: 'Letters, numbers and basic punctuation only.'
+      }
+    };
+
+    var formError = document.getElementById('form-error');
+
+    function showFormError(message) {
+      if (!formError) return;
+      formError.textContent = message;
+      formError.hidden = false;
+    }
+
+    function clearFormError() {
+      if (!formError) return;
+      formError.hidden = true;
+      formError.textContent = '';
+    }
+
+    function wrapOf(input) { return input.closest('.field'); }
+
+    function setError(input, message) {
+      var wrap = wrapOf(input);
+      if (!wrap) return;
+      var slot = wrap.querySelector('.error');
+      if (message) {
+        wrap.classList.add('is-invalid');
+        input.setAttribute('aria-invalid', 'true');
+        if (slot) slot.textContent = message;
+      } else {
+        wrap.classList.remove('is-invalid');
+        input.removeAttribute('aria-invalid');
+        if (slot) slot.textContent = '';
+      }
+    }
+
+    /* Collapse runs of whitespace and trim. Formula prefixes are stripped
+       from the name and company fields only. Email and mobile are exempt
+       because a leading + is legitimate in both (plus-addressing, +61) and
+       because their patterns are strict whitelists — a formula cannot
+       survive them anyway, so stripping would only corrupt real values. */
+    var NO_FORMULA_STRIP = { email: true, mobile: true };
+
+    function clean(value, stripFormula) {
+      var out = String(value).replace(/\s+/g, ' ').trim();
+      if (stripFormula) out = out.replace(FORMULA_PREFIX, '').trim();
+      return out;
+    }
+
+    function validateField(name) {
+      var input = form.elements[name];
+      if (!input) return true;
+
+      var value = clean(input.value, !NO_FORMULA_STRIP[name]);
+      input.value = value;
+
+      var rule = RULES[name];
+      if (!rule) return true;
+
+      if (value === '') {
+        if (rule.required) { setError(input, rule.emptyMsg); return false; }
+        setError(input, null);
+        return true;
+      }
+      if (UNSAFE.test(value)) {
+        setError(input, 'Remove quotes and angle brackets.');
+        return false;
+      }
+      if (!rule.test(value)) { setError(input, rule.msg); return false; }
+
+      setError(input, null);
+      return true;
+    }
+
+    /* Clear a field's error as soon as the person starts fixing it. */
+    Object.keys(RULES).forEach(function (name) {
+      var input = form.elements[name];
+      if (!input) return;
+      input.addEventListener('input', function () {
+        if (wrapOf(input) && wrapOf(input).classList.contains('is-invalid')) setError(input, null);
+      });
+      input.addEventListener('blur', function () {
+        if (input.value !== '') validateField(name);
+      });
+    });
+
+    form.addEventListener('submit', function (event) {
+      try {
+        clearFormError();
+
+        /* Bot: filled the field no human can see. */
+        if (honeypot && honeypot.value !== '') {
+          event.preventDefault();
+          showFormError('That submission could not be accepted. Please reload the page and try again.');
+          return;
+        }
+
+        /* Bot: submitted faster than anyone could type. A person who trips
+           this simply taps again a second later and goes through. */
+        if (Date.now() - loadedAt < MIN_FILL_MS) {
+          event.preventDefault();
+          showFormError('That was a little quick for us. Tap “Enter the draw” once more.');
+          return;
+        }
+
+        var firstBad = null;
+        Object.keys(RULES).forEach(function (name) {
+          if (!validateField(name) && !firstBad) firstBad = form.elements[name];
+        });
+
+        if (firstBad) {
+          event.preventDefault();
+          firstBad.focus();
+          if (firstBad.scrollIntoView) firstBad.scrollIntoView({ block: 'center' });
+          return;
+        }
+
+        /* Keep the honeypot out of the POST entirely. */
+        if (honeypot) honeypot.disabled = true;
+
+        /* Stop the double-tap that produces duplicate entries. Deferred so
+           the browser has already serialised the form. */
+        if (submitBtn) {
+          window.setTimeout(function () {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Entering…';
+          }, 0);
+        }
+      } catch (err) {
+        /* Never let a scripting fault block a genuine entry. */
+      }
+    });
+  })();
+  </script>
 </body>
 </html>
