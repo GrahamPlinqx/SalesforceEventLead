@@ -134,10 +134,23 @@
     .entered .confirm-view{display:block}
 
     /* ---- Masthead ---- */
-    /* Wordmark is 615x225 (2.73:1), so 48px tall is still well under 1:1
-       at 2x — no softening. Minimum in the system is 20px. */
-    .masthead{display:flex;justify-content:center;margin-bottom:var(--space-8)}
-    .masthead img{height:48px;width:auto;display:block}
+    /* Co-brand lockup. Plinqx wordmark is 615x225 (2.73:1) at 48px tall —
+       still under 1:1 at 2x, so no softening. True Blue is a stacked
+       mark-over-wordmark, so it is set taller than the Plinqx wordmark to
+       balance optically rather than matching raw height. Divider follows
+       the design system co-brand pattern. */
+    .masthead{
+      display:flex;align-items:center;justify-content:center;
+      gap:var(--space-5);
+      margin-bottom:var(--space-8);
+    }
+    .masthead img{width:auto;display:block}
+    .masthead .plinqx-mark{height:48px}
+    .masthead .partner-mark{height:58px}
+    .lockup-divider{
+      flex:none;width:1px;height:40px;
+      background:rgba(17,18,20,.16);
+    }
 
     /* ---- Card ---- */
     .card{
@@ -387,8 +400,10 @@
         padding-right:calc(var(--space-4) + env(safe-area-inset-right));
         padding-bottom:calc(var(--space-6) + env(safe-area-inset-bottom));
       }
-      .masthead{margin-bottom:var(--space-6)}
-      .masthead img{height:42px}
+      .masthead{margin-bottom:var(--space-6);gap:var(--space-4)}
+      .masthead .plinqx-mark{height:40px}
+      .masthead .partner-mark{height:48px}
+      .lockup-divider{height:34px}
       .prize{padding:var(--space-6) var(--space-5) var(--space-6) calc(var(--space-5) + 6px)}
       .prize h1{max-width:14ch}
       .card-body{padding:var(--space-6) var(--space-5) var(--space-5)}
@@ -414,7 +429,9 @@
     <div class="container">
 
       <div class="masthead">
-        <img src="assets/plinqx-logo.png" alt="Plinqx" width="131" height="48">
+        <img class="plinqx-mark" src="assets/plinqx-logo.png" alt="Plinqx" width="131" height="48">
+        <span class="lockup-divider" aria-hidden="true"></span>
+        <img class="partner-mark" src="assets/trueblue-logo.png" alt="True Blue" width="111" height="58">
       </div>
 
       <div class="card">
