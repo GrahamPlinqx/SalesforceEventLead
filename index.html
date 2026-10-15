@@ -134,23 +134,10 @@
     .entered .confirm-view{display:block}
 
     /* ---- Masthead ---- */
-    /* Co-brand lockup. Plinqx wordmark is 615x225 (2.73:1) at 48px tall —
-       still under 1:1 at 2x, so no softening. True Blue is a stacked
-       mark-over-wordmark, so it is set taller than the Plinqx wordmark to
-       balance optically rather than matching raw height. Divider follows
-       the design system co-brand pattern. */
-    .masthead{
-      display:flex;align-items:center;justify-content:center;
-      gap:var(--space-5);
-      margin-bottom:var(--space-8);
-    }
-    .masthead img{width:auto;display:block}
-    .masthead .plinqx-mark{height:48px}
-    .masthead .partner-mark{height:58px}
-    .lockup-divider{
-      flex:none;width:1px;height:40px;
-      background:rgba(17,18,20,.16);
-    }
+    /* Plinqx wordmark is 615x225 (2.73:1), so 48px tall is still well under
+       1:1 at 2x — no softening. Minimum in the system is 20px. */
+    .masthead{display:flex;justify-content:center;margin-bottom:var(--space-8)}
+    .masthead img{height:48px;width:auto;display:block}
 
     /* ---- Card ---- */
     .card{
@@ -185,12 +172,83 @@
       background-image:url("assets/bg-wave-dark.png");
       background-size:cover;
       background-position:right center;
-      opacity:.85;
+      /* Kept well back: the True Blue mark sits over this corner, and the
+         wave's cyan lines are close enough in hue to camouflage it. */
+      opacity:.45;
       -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
               mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
     }
 
-    .prize > *:not(.prize-art){position:relative;z-index:1}
+    /* Copy left, partner mark right, sitting above the wave artwork.
+       A flex row rather than absolute positioning, so the mark can never
+       collide with the headline at any width — the copy column simply
+       gets whatever is left. */
+    .panel-inner{
+      position:relative;z-index:1;
+      display:flex;align-items:center;gap:var(--space-5);
+    }
+    .panel-copy{flex:1 1 auto;min-width:0}
+    /* "BLAZING" in this lockup is set in white, so the mark only reads on a
+       dark ground — never put it on a light panel or a white chip. A soft
+       dark scrim lifts it off the wave artwork without lightening anything. */
+    /* Fixed widths, never a percentage: this is a replaced element with an
+       intrinsic width of 400px, and a percentage cannot resolve during
+       min-content sizing — the image then contributes its full 400px and
+       forces the card wider than a phone viewport. */
+    .panel-partner{
+      flex:0 0 auto;
+      width:96px;max-width:100%;
+      height:auto;display:block;
+      padding:6px;
+      background:radial-gradient(ellipse at center,rgba(8,9,11,.92) 45%,rgba(8,9,11,0) 75%);
+    }
+
+    .prize-content{
+      position:relative;z-index:1;
+      display:flex;flex-direction:column;height:100%;
+    }
+
+    /* ---- Prize list ---- */
+    .prizes{
+      list-style:none;margin:var(--space-6) 0 0;padding:0;
+      display:flex;flex-direction:column;gap:var(--space-3);
+    }
+    .prizes li{
+      display:flex;align-items:center;gap:var(--space-4);
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius-tile);
+      padding:var(--space-3) var(--space-4);
+    }
+    .prizes .pic{
+      flex:none;width:30px;height:30px;border-radius:8px;
+      background:rgba(255,255,255,.10);color:#ffffff;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
+    .prizes .pic svg{width:17px;height:17px;display:block}
+    .prizes .pt{
+      color:#ffffff;font-size:var(--fs-body-sm);
+      font-weight:var(--fw-semibold);line-height:1.35;
+    }
+
+    .prizes + .sub{margin-top:var(--space-5)}
+
+    /* ---- QR ----
+       Desktop only. On a phone the visitor has already arrived, so the code
+       is noise; on a laptop or a screen at the stand it is the whole point. */
+    .qr-block{display:none}
+    .qr{
+      flex:none;width:112px;height:112px;display:block;
+      background:#ffffff;border-radius:10px;padding:8px;
+    }
+    .qr-text strong{
+      display:block;color:#ffffff;font-size:var(--fs-body-sm);
+      font-weight:var(--fw-semibold);
+    }
+    .qr-text span{
+      display:block;color:rgba(255,255,255,.6);
+      font-size:var(--fs-caption);line-height:1.45;margin-top:2px;
+    }
 
     .prize .eyebrow{
       display:inline-flex;align-items:center;gap:10px;
@@ -207,7 +265,7 @@
       font-weight:var(--fw-black);
       letter-spacing:var(--ls-display);
       line-height:1.02;
-      max-width:12ch;
+      overflow-wrap:break-word;
     }
 
     .prize .sub{
@@ -215,7 +273,6 @@
       font-size:var(--fs-body-sm);
       line-height:1.5;
       margin-top:var(--space-4);
-      max-width:34ch;
     }
 
     /* ================================================================
@@ -248,11 +305,11 @@
       font-weight:var(--fw-black);
       letter-spacing:var(--ls-display);
       line-height:1.02;
-      max-width:14ch;
+      overflow-wrap:break-word;
     }
     .confirm .sub{
       color:rgba(255,255,255,.72);font-size:var(--fs-body-sm);line-height:1.5;
-      margin-top:var(--space-4);max-width:36ch;
+      margin-top:var(--space-4);
     }
 
     .next{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--space-5)}
@@ -400,20 +457,61 @@
         padding-right:calc(var(--space-4) + env(safe-area-inset-right));
         padding-bottom:calc(var(--space-6) + env(safe-area-inset-bottom));
       }
-      .masthead{margin-bottom:var(--space-6);gap:var(--space-4)}
-      .masthead .plinqx-mark{height:40px}
-      .masthead .partner-mark{height:48px}
-      .lockup-divider{height:34px}
+      .masthead{margin-bottom:var(--space-6)}
+      .masthead img{height:42px}
       .prize{padding:var(--space-6) var(--space-5) var(--space-6) calc(var(--space-5) + 6px)}
-      .prize h1{max-width:14ch}
+      .panel-inner{gap:var(--space-4)}
+      .panel-partner{width:84px}
       .card-body{padding:var(--space-6) var(--space-5) var(--space-5)}
       .row{grid-template-columns:1fr;gap:var(--space-5)}
+    }
+
+    @media (max-width:380px){
+      .panel-partner{width:72px}
     }
 
     /* Short landscape phones — don't let the prize panel eat the fold */
     @media (max-height:520px) and (orientation:landscape){
       .prize{padding-top:var(--space-5);padding-bottom:var(--space-5)}
       .prize .sub{display:none}
+    }
+
+    /* ---- Desktop ----
+       The card becomes two columns on the design system's hero ratio
+       (1.05fr / 0.95fr — copy slightly wider than the form). Both the entry
+       and confirmation states resolve to exactly two visible children, so
+       the same grid serves both. */
+    @media (min-width:900px){
+      .container{max-width:1040px}
+
+      .card{
+        display:grid;
+        grid-template-columns:1.05fr .95fr;
+        align-items:stretch;
+      }
+
+      .prize,.confirm{
+        padding:var(--space-10) var(--space-10) var(--space-10) calc(var(--space-10) + 6px);
+      }
+
+      .card-body{padding:var(--space-10)}
+
+      .masthead{margin-bottom:var(--space-8)}
+
+      .qr-block{
+        display:flex;align-items:center;gap:var(--space-5);
+        margin-top:auto;padding-top:var(--space-10);
+      }
+
+      /* The form column fills the taller of the two, so centre it.
+         Scoped to the un-entered state: a bare .card-body.entry-view would
+         tie on specificity with .entered .entry-view{display:none} and, being
+         later in the sheet, win — putting the form back on the confirmation. */
+      :root:not(.entered) .card-body.entry-view{
+        display:flex;flex-direction:column;justify-content:center;
+      }
+
+      .panel-partner{width:150px}
     }
 
     @media (prefers-reduced-motion:reduce){
@@ -429,27 +527,71 @@
     <div class="container">
 
       <div class="masthead">
-        <img class="plinqx-mark" src="assets/plinqx-logo.png" alt="Plinqx" width="131" height="48">
-        <span class="lockup-divider" aria-hidden="true"></span>
-        <img class="partner-mark" src="assets/trueblue-logo.png" alt="True Blue" width="111" height="58">
+        <img src="assets/plinqx-logo.png" alt="Plinqx" width="131" height="48">
       </div>
 
       <div class="card">
 
         <div class="prize entry-view">
           <div class="prize-art" aria-hidden="true"></div>
-          <span class="eyebrow">DemoJam prize draw</span>
-          <h1>Win a $150 Woolworths gift card.</h1>
-          <p class="sub">Fill in the form below and you&rsquo;re entered. We draw the winner at the end of DemoJam and email them straight away.</p>
+          <div class="prize-content">
+
+            <div class="panel-inner">
+              <div class="panel-copy">
+                <span class="eyebrow">DemoJam prize draw</span>
+                <h1>Two prizes. One entry.</h1>
+              </div>
+              <img class="panel-partner" src="assets/trueblue-logo.png" alt="True Blue" width="400" height="209">
+            </div>
+
+            <ul class="prizes">
+              <li>
+                <span class="pic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="8" width="18" height="4" rx="1"/>
+                    <path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
+                    <path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>
+                  </svg>
+                </span>
+                <span class="pt">$150 Woolworths gift card</span>
+              </li>
+              <li>
+                <span class="pic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                       stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
+                  </svg>
+                </span>
+                <span class="pt">Nike&reg; Dri-FIT Plinqx T-Shirt</span>
+              </li>
+            </ul>
+
+            <p class="sub">Fill in the form and you&rsquo;re entered. We draw one winner at the end of DemoJam and email them straight away.</p>
+
+            <div class="qr-block">
+              <img class="qr" src="assets/qr-enter.png" alt="QR code linking to this entry page" width="512" height="512">
+              <span class="qr-text">
+                <strong>Scan to enter</strong>
+                <span>Point your phone camera at the code.</span>
+              </span>
+            </div>
+
+          </div>
         </div>
 
         <div class="confirm confirm-view">
-          <span class="tile" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                 stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-          </span>
-          <h1>You&rsquo;re in the draw.</h1>
-          <p class="sub">Your entry is recorded. There&rsquo;s nothing else you need to do.</p>
+          <div class="panel-inner">
+            <div class="panel-copy">
+              <span class="tile" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                     stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <h1>You&rsquo;re in the draw.</h1>
+              <p class="sub">Your entry is recorded. There&rsquo;s nothing else you need to do.</p>
+            </div>
+            <img class="panel-partner" src="assets/trueblue-logo.png" alt="True Blue" width="400" height="209">
+          </div>
         </div>
 
         <div class="card-body confirm-view">
