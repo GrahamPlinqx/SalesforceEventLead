@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plinqx | Win a $150 Woolworths gift card</title>
+  <title>Plinqx | Scan and win at DemoJam</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Fill in the form to enter the Plinqx DemoJam draw for a $150 Woolworths gift card.">
+  <meta name="description" content="Fill in the form to enter the Plinqx DemoJam draw for a $150 Woolworths gift card and a Nike Dri-FIT Plinqx T-Shirt.">
   <meta name="theme-color" content="#0a0b0d">
   <link rel="icon" type="image/png" href="assets/plinqx-mark-512.png">
   <link rel="apple-touch-icon" href="assets/plinqx-mark-512.png">
@@ -237,9 +237,14 @@
        Desktop only. On a phone the visitor has already arrived, so the code
        is noise; on a laptop or a screen at the stand it is the whole point. */
     .qr-block{display:none}
+    /* Sized in vw, not %, so it stays resolvable during min-content sizing.
+       Only ever shown at >=900px, so the floor is what a 900px viewport gets. */
     .qr{
-      flex:none;width:112px;height:112px;display:block;
-      background:#ffffff;border-radius:10px;padding:8px;
+      flex:none;
+      width:clamp(150px,14vw,200px);
+      height:auto;max-width:100%;
+      display:block;
+      background:#ffffff;border-radius:12px;padding:10px;
     }
     .qr-text strong{
       display:block;color:#ffffff;font-size:var(--fs-body-sm);
@@ -511,7 +516,9 @@
         display:flex;flex-direction:column;justify-content:center;
       }
 
-      .panel-partner{width:150px}
+      /* Scales back between 900 and ~1360px, where a fixed 150px squeezed
+         the headline column hard enough to wrap it to four lines. */
+      .panel-partner{width:clamp(104px,11vw,150px)}
     }
 
     @media (prefers-reduced-motion:reduce){
@@ -539,7 +546,7 @@
             <div class="panel-inner">
               <div class="panel-copy">
                 <span class="eyebrow">DemoJam prize draw</span>
-                <h1>Two prizes. One entry.</h1>
+                <h1>Scan and win with Plinqx.</h1>
               </div>
               <img class="panel-partner" src="assets/trueblue-logo.png" alt="True Blue" width="400" height="209">
             </div>
