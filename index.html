@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plinqx | Scan and win at DemoJam</title>
+  <title>Plinqx | Down Under Dreaming Brisbane 2026</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Fill in the form to enter the Plinqx DemoJam draw for a $150 Woolworths gift card and a Nike Dri-FIT Plinqx T-Shirt.">
+  <meta name="description" content="Down Under Dreaming Brisbane 2026. Will our Agent pick you? Enter the Plinqx draw for a $150 Woolworths gift card and a Nike Dri-FIT Plinqx T-Shirt.">
+  <meta property="og:title" content="Plinqx | Down Under Dreaming Brisbane 2026">
+  <meta property="og:description" content="Will our Agent pick you? Enter the Plinqx prize draw at Down Under Dreaming Brisbane.">
+  <meta property="og:url" content="https://grahamplinqx.github.io/SalesforceEventLead/">
   <meta name="theme-color" content="#0a0b0d">
   <link rel="icon" type="image/png" href="assets/plinqx-mark-512.png">
   <link rel="apple-touch-icon" href="assets/plinqx-mark-512.png">
@@ -69,7 +72,7 @@
       --gradient-ink:linear-gradient(150deg,#15161a 0%,#0a0b0d 100%);
       --pattern-grid:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
       /* Fluid prize headline — 30px phone, 44px desktop */
-      --fs-prize:clamp(30px,8.2vw,44px);
+      --fs-prize:clamp(34px,7.6vw,52px);
     }
 
     *,*::before,*::after{box-sizing:border-box}
@@ -172,37 +175,18 @@
       background-image:url("assets/bg-wave-dark.png");
       background-size:cover;
       background-position:right center;
-      /* Kept well back: the True Blue mark sits over this corner, and the
-         wave's cyan lines are close enough in hue to camouflage it. */
+      /* Keep the branded wave subtly behind the event headline. */
       opacity:.45;
       -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
               mask-image:linear-gradient(90deg,transparent 0%,transparent 34%,#000 88%);
     }
 
-    /* Copy left, partner mark right, sitting above the wave artwork.
-       A flex row rather than absolute positioning, so the mark can never
-       collide with the headline at any width — the copy column simply
-       gets whatever is left. */
+    /* Headline layout above Plinqx wave artwork. */
     .panel-inner{
       position:relative;z-index:1;
       display:flex;align-items:center;gap:var(--space-5);
     }
     .panel-copy{flex:1 1 auto;min-width:0}
-    /* "BLAZING" in this lockup is set in white, so the mark only reads on a
-       dark ground — never put it on a light panel or a white chip. A soft
-       dark scrim lifts it off the wave artwork without lightening anything. */
-    /* Fixed widths, never a percentage: this is a replaced element with an
-       intrinsic width of 400px, and a percentage cannot resolve during
-       min-content sizing — the image then contributes its full 400px and
-       forces the card wider than a phone viewport. */
-    .panel-partner{
-      flex:0 0 auto;
-      width:96px;max-width:100%;
-      height:auto;display:block;
-      padding:6px;
-      background:radial-gradient(ellipse at center,rgba(8,9,11,.92) 45%,rgba(8,9,11,0) 75%);
-    }
-
     .prize-content{
       position:relative;z-index:1;
       display:flex;flex-direction:column;height:100%;
@@ -241,10 +225,11 @@
        Only ever shown at >=900px, so the floor is what a 900px viewport gets. */
     .qr{
       flex:none;
-      width:clamp(150px,14vw,200px);
+      width:clamp(235px,25vw,310px);
       height:auto;max-width:100%;
       display:block;
-      background:#ffffff;border-radius:12px;padding:10px;
+      background:#ffffff;border-radius:16px;padding:14px;
+      box-shadow:0 0 0 1px rgba(255,255,255,.18),0 18px 38px rgba(0,0,0,.25);
     }
     .qr-text strong{
       display:block;color:#ffffff;font-size:var(--fs-body-sm);
@@ -466,13 +451,8 @@
       .masthead img{height:42px}
       .prize{padding:var(--space-6) var(--space-5) var(--space-6) calc(var(--space-5) + 6px)}
       .panel-inner{gap:var(--space-4)}
-      .panel-partner{width:84px}
       .card-body{padding:var(--space-6) var(--space-5) var(--space-5)}
       .row{grid-template-columns:1fr;gap:var(--space-5)}
-    }
-
-    @media (max-width:380px){
-      .panel-partner{width:72px}
     }
 
     /* Short landscape phones — don't let the prize panel eat the fold */
@@ -487,11 +467,11 @@
        and confirmation states resolve to exactly two visible children, so
        the same grid serves both. */
     @media (min-width:900px){
-      .container{max-width:1040px}
+      .container{max-width:1160px}
 
       .card{
         display:grid;
-        grid-template-columns:1.05fr .95fr;
+        grid-template-columns:1.12fr .88fr;
         align-items:stretch;
       }
 
@@ -504,8 +484,8 @@
       .masthead{margin-bottom:var(--space-8)}
 
       .qr-block{
-        display:flex;align-items:center;gap:var(--space-5);
-        margin-top:auto;padding-top:var(--space-10);
+        display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);
+        margin-top:auto;padding-top:var(--space-8);
       }
 
       /* The form column fills the taller of the two, so centre it.
@@ -516,11 +496,13 @@
         display:flex;flex-direction:column;justify-content:center;
       }
 
-      /* Scales back between 900 and ~1360px, where a fixed 150px squeezed
-         the headline column hard enough to wrap it to four lines. */
-      .panel-partner{width:clamp(104px,11vw,150px)}
     }
 
+    /* Event details and scan target, while keeping the original Plinqx identity. */
+    .agent-accent{color:var(--lime-300)}
+    .qr-block a{display:block;max-width:100%;border-radius:16px}
+    .qr-text{max-width:100%;overflow-wrap:anywhere}
+    .qr-url{font-size:11px!important;opacity:.84;overflow-wrap:anywhere;margin-top:var(--space-2)!important}
     @media (prefers-reduced-motion:reduce){
       *{transition-duration:0.01ms !important;animation-duration:0.01ms !important}
     }
@@ -545,10 +527,10 @@
 
             <div class="panel-inner">
               <div class="panel-copy">
-                <span class="eyebrow">DemoJam prize draw</span>
-                <h1>Scan and win with Plinqx.</h1>
+                <span class="eyebrow">Down Under Dreaming · Brisbane 2026</span>
+                <h1>Will our <span class="agent-accent">'Agent'</span> pick you?</h1>
               </div>
-              <img class="panel-partner" src="assets/trueblue-logo.png" alt="True Blue" width="400" height="209">
+              
             </div>
 
             <ul class="prizes">
@@ -574,13 +556,16 @@
               </li>
             </ul>
 
-            <p class="sub">Fill in the form and you&rsquo;re entered. We draw one winner at the end of DemoJam and email them straight away.</p>
+            <p class="sub">Complete the form to enter the draw. One lucky winner will be contacted by email after Down Under Dreaming Brisbane.</p>
 
             <div class="qr-block">
-              <img class="qr" src="assets/qr-enter.png" alt="QR code linking to this entry page" width="512" height="512">
+              <a href="https://grahamplinqx.github.io/SalesforceEventLead/" aria-label="Open the Plinqx event page">
+                <img class="qr" id="event-qr" src="assets/qr-enter.png" alt="QR code for https://grahamplinqx.github.io/SalesforceEventLead/" width="512" height="512">
+              </a>
               <span class="qr-text">
                 <strong>Scan to enter</strong>
-                <span>Point your phone camera at the code.</span>
+                <span>Point your phone camera at the code to open the entry form.</span>
+                <span class="qr-url">grahamplinqx.github.io/SalesforceEventLead/</span>
               </span>
             </div>
 
@@ -597,7 +582,7 @@
               <h1>You&rsquo;re in the draw.</h1>
               <p class="sub">Your entry is recorded. There&rsquo;s nothing else you need to do.</p>
             </div>
-            <img class="panel-partner" src="assets/trueblue-logo.png" alt="True Blue" width="400" height="209">
+            
           </div>
         </div>
 
@@ -605,7 +590,7 @@
           <ul class="next">
             <li>
               <span class="n" aria-hidden="true">1</span>
-              <span class="t"><strong>We draw the winner at the end of DemoJam.</strong> One entry per person.</span>
+              <span class="t"><strong>We select the winner after Down Under Dreaming Brisbane.</strong> One entry per person.</span>
             </li>
             <li>
               <span class="n" aria-hidden="true">2</span>
@@ -626,7 +611,7 @@
             <input type="hidden" name="oid" value="00DgK00000cHQwI">
             <input type="hidden" name="retURL" value="https://grahamplinqx.github.io/SalesforceEventLead/?entered=1">
             <input type="hidden" name="lead_source" value="Web">
-            <input type="hidden" name="description" value="DemoJam event — entered the Plinqx $150 Woolworths gift card draw.">
+            <input type="hidden" name="description" value="Down Under Dreaming Brisbane 2026 — Plinqx prize draw entry.">
 
             <!--  ----------------------------------------------------------------------  -->
             <!--  NOTE: These fields are optional debugging elements. Please uncomment    -->
@@ -896,6 +881,25 @@
       }
     });
   })();
+  </script>
+  <script>
+    /* Inline QR encodes https://grahamplinqx.github.io/SalesforceEventLead/
+       41x41 error-corrected matrix, validated by QR decoder. No external service. */
+    (function () {
+      var img = document.getElementById('event-qr');
+      if (!img) return;
+      try {
+        var bits = atob('AAAAAAAAAAAAAAAAAAAAAAAAAAAA/iC5P4BBLNEQQC6qxyugF1YGVdALrHiy6AQU8rEEA/qqqv4AATU8AAC+fFK+AHwKe5tAFLnRosAcqJyV4AHsKXzAActLKSwCXlazrADh7jrcALKBWtiAKH8Mm0AHo8uGwBgQwJ/wCzoyJcAFDxyJNAIb2Bl8AUlpWM8Ah9hK/AAAVn5FgD+I8erAEFm/8fALrlkv2AXWe8JcAuqus9ABBPZNnAD+ncPRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+        var size = 41, path = '';
+        for (var k = 0; k < size * size; k++) {
+          if (bits.charCodeAt(k >> 3) & (128 >> (k & 7))) {
+            path += 'M' + (k % size) + ' ' + Math.floor(k / size) + 'h1v1h-1z';
+          }
+        }
+        var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges"><rect width="41" height="41" fill="white"/><path fill="black" d="' + path + '"/></svg>';
+        img.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+      } catch (e) { /* Keep the PNG fallback if rendering fails. */ }
+    })();
   </script>
 </body>
 </html>
