@@ -232,8 +232,9 @@
       box-shadow:0 0 0 1px rgba(255,255,255,.18),0 18px 38px rgba(0,0,0,.25);
     }
     .qr-text strong{
-      display:block;color:#ffffff;font-size:var(--fs-body-sm);
-      font-weight:var(--fw-semibold);
+      display:block;color:var(--lime-300);
+      font-size:clamp(26px,3vw,36px);line-height:1.05;
+      letter-spacing:-.025em;font-weight:var(--fw-black);
     }
     .qr-text span{
       display:block;color:rgba(255,255,255,.6);
@@ -498,6 +499,15 @@
 
     }
 
+    /* Prominent event CTA, visible even on phones where the QR is hidden. */
+    .scan-callout{
+      margin-top:var(--space-5);display:inline-flex;align-items:center;gap:12px;
+      color:var(--lime-300);font-weight:var(--fw-black);
+      font-size:clamp(28px,4.2vw,42px);line-height:1.05;
+      letter-spacing:-.035em;
+    }
+    .scan-callout span{font-size:.72em;line-height:1}
+
     /* Event details and scan target, while keeping the original Plinqx identity. */
     .agent-accent{color:var(--lime-300)}
     .qr-block a{display:block;max-width:100%;border-radius:16px}
@@ -529,6 +539,7 @@
               <div class="panel-copy">
                 <span class="eyebrow">Down Under Dreaming · Brisbane 2026</span>
                 <h1>Will our <span class="agent-accent">agent</span> pick you in the DemoJam?</h1>
+                <p class="scan-callout">SCAN TO WIN <span aria-hidden="true">↗</span></p>
               </div>
               
             </div>
@@ -563,7 +574,7 @@
                 <img class="qr" id="event-qr" src="assets/qr-enter.png" alt="QR code for https://grahamplinqx.github.io/SalesforceEventLead/" width="512" height="512">
               </a>
               <span class="qr-text">
-                <strong>Scan to enter</strong>
+                <strong>SCAN TO WIN</strong>
                 <span>Point your phone camera at the code to open the entry form.</span>
                 <span class="qr-url">grahamplinqx.github.io/SalesforceEventLead/</span>
               </span>
